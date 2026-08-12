@@ -1,0 +1,37 @@
+# macOS
+.DS_Store
+._*
+
+# Xcode / SwiftPM generated files
+build/
+DerivedData/
+.build/
+.swiftpm/
+*.xcarchive
+*.ipa
+*.dSYM/
+*.dSYM.zip
+*.xcresult
+*.xcuserstate
+**/xcuserdata/
+
+# Editors
+.idea/
+.vscode/
+*.swp
+*~
+
+# Local signing material and environment files
+*.mobileprovision
+*.p12
+.env
+.env.*
+!.env.example
+
+# Temporary files
+.tmp/
+tmp/
+*.tmp
+*.bak
+*.orig
+*.rej
