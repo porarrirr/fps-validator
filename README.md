@@ -1,43 +1,33 @@
 # FPS Validator
 
-iOSでMetalコンテンツを描画しながら、`CADisplayLink` のコールバック時刻からフレーム間隔とFPSを記録・CSV出力する検証アプリです。
+English | [日本語](README.ja.md)
 
-## 何を測っているか
+An iOS test app that renders Metal content while recording frame intervals and an FPS estimate from `CADisplayLink` callback timestamps. Results can be exported as CSV for repeatable comparisons.
 
-このアプリが報告するFPSは、MetalコマンドのGPU完了数やディスプレイへの実提示数ではなく、`CADisplayLink.timestamp` のコールバック頻度です。直近 $n$ 個のタイムスタンプを使い、次の移動窓で計算します。
+## What it measures
 
-$$
-FPS=\frac{n-1}{t_{last}-t_{first}}
-$$
+The reported FPS represents the frequency of `CADisplayLink` callbacks. It is not a direct count of completed GPU commands or frames physically presented by the display.
 
-個々のフレーム時間は連続するタイムスタンプの差です。目標FPSを $F$、設定した許容値を $\delta$ msとすると、次の条件を満たすコールバックをdropとして数えます。
+The moving-window estimate is:
 
-$$
-\Delta t_{ms}>\frac{1000}{F}+\delta
-$$
+$$FPS=\frac{n-1}{t_{last}-t_{first}}$$
 
-既定値は移動平均60フレーム、drop許容値2msです。CSVにはフレーム番号、時刻、目標FPS、移動窓FPS、フレーム時間、drop判定を保存します。
+The CSV includes frame number, timestamp, target FPS, moving-window FPS, frame duration, and drop classification.
 
-## 目標FPSとProMotion
+## Using the app
 
-アプリは `MTKView.preferredFramesPerSecond` と `CADisplayLink.preferredFrameRateRange` に同じ目標値を設定します。ただし、これはOSへの要求であり、熱状態、省電力モード、画面内容、端末の対応リフレッシュレート、他の負荷によって実際のコールバック周期は変わります。
+- Choose a target supported by the device's maximum refresh rate
+- Configure the moving-average window and drop tolerance
+- Run repeated measurements for the same duration
+- Compare frame-time data and drop counts, not only average FPS
+- Use a physical device for final frame-pacing evaluation
 
-プリセットは30 / 60 / 90 / 120 / 144 FPSのうち、`UIScreen.main.maximumFramesPerSecond` 以下の値だけを表示します。現在のUIには80 FPSプリセットはありません。60Hz端末では90/120Hzの検証はできません。
+Target frame rates are requests to iOS. Thermal state, Low Power Mode, screen content, device capabilities, and other workloads can change the actual callback timing. Simulator results are also affected by the Mac and should not be treated as device display measurements.
 
-## 再現性のある検証手順
+## Build
 
-1. 実機で低電力モードを無効にし、端末温度を安定させます。
-2. 目標FPS、移動平均窓、drop許容値を記録します。
-3. 測定開始直後のウォームアップ区間を分け、同じ時間だけ複数回測ります。
-4. 平均FPSだけでなく、フレーム時間とdrop数をCSVで比較します。
-5. 外部カメラや別計測器と比較する場合は、表示更新の実測と`CADisplayLink`測定が別の指標であることを明記します。
+Open `FPSValidator/FPSValidator.xcodeproj` in Xcode and build for a physical iOS device.
 
-Simulatorのコールバック周期はMacのディスプレイ、負荷、仮想化の影響を受けるため、端末のframe pacing検証には使わないでください。最終結果は実機で確認してください。
+## License
 
-## ビルド
-
-`FPSValidator/FPSValidator.xcodeproj` をXcodeで開き、iOS実機ターゲットでビルドします。
-
-## ライセンス
-
-このリポジトリには現在、再利用を許諾するライセンスを設定していません。
+No license is currently granted for this repository's original code.
