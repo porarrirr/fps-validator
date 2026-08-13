@@ -30,4 +30,4 @@ Open `FPSValidator/FPSValidator.xcodeproj` in Xcode and build for a physical iOS
 
 ## License
 
-No license is currently granted for this repository's original code.
+The original code is proprietary and all rights are reserved. See [LICENSE](LICENSE).
